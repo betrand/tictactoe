@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <head jsf:id="head" jsf:name="head" >
+        <title>Tic Tac Toe</title>
+        <h:outputStylesheet library="css" name="style.css"/>
+    </head>
+
+    <body jsf:id="body" jsf:name="body" class="centreContents">
+        <p:growl id="growl" life="10000"/>
+
+        <form jsf:id="form" jsf:name="form" class="topmargin">
+
+            <ui:remove>The System Player Icon</ui:remove>
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 align-right">
+                        <p:commandLink 
+                            styleClass="center-contents"
+                            title="System Player"  
+                            actionListener="#{game.start}"
+                            update="@form">
+                            <h:graphicImage 
+                                library="icons" 
+                                title="System Player" 
+                                name='system.png'                                                 
+                                alt="System">
+                            </h:graphicImage>
+                            <f:param name="player" value="X"/>
+                        </p:commandLink>
+                    </div>
+
+                    <ui:remove>The Game Player State Text</ui:remove>
+                    <div class="ui-grid-col-4 align-center">
+                        <h:outputLabel id="reloadLabel" 
+                                       value="#{game.state}" 
+                                       class="link40" 
+                                       title="Game Info"/>
+                    </div>
+
+                    <ui:remove>The Human Player Icon</ui:remove>
+                    <div class="ui-grid-col-4 align-left">
+                        <p:commandLink 
+                            styleClass="center-contents"
+                            title="Human Player"  
+                            actionListener="#{game.start}"
+                            update="@form">
+                            <h:graphicImage 
+                                library="icons" 
+                                title="Human Player" 
+                                name='human.png'                                                 
+                                alt="Human">
+                            </h:graphicImage>
+                            <f:param name="player" value="O"/>
+                        </p:commandLink>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div>
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4"><h:outputLabel value=""/></div>
+
+                        <div class="ui-grid-col-4">
+                            <ui:remove>The Grid Component</ui:remove>
+                            <p:dataGrid id="datalist" 
+                                        styleClass="paginator center-contents"
+                                        paginator="false" 
+                                        value="#{game.screen}" 
+                                        columns="3" 
+                                        var="item">
+
+                                <h:panelGrid columns="1" styleClass="center-contents" style="border: 1px solid black;">
+                                    <p:commandLink 
+                                        styleClass="center-contents"
+                                        title="#{item.mark} Player Mark"  
+                                        style="text-decoration: none; text-align: center; color: #46b8da; "
+                                        actionListener="#{game.play}"
+                                        update="@form growl">
+
+                                        <h:panelGrid columns="1" styleClass="center-contents">
+                                            <h:graphicImage 
+                                                library="icons" 
+                                                width="75%" 
+                                                height="66"
+                                                name='#{item.mark != null ? item.mark : "empty.png"}'                                                 
+                                                alt="Mark" 
+                                                style="vertical-align: middle; border-radius: 0px; margin:0 auto;">
+                                            </h:graphicImage>
+                                        </h:panelGrid>
+
+                                        <f:param name="cellId" value="#{item.id}"/>
+                                    </p:commandLink>
+                                </h:panelGrid>
+
+                            </p:dataGrid>
+                        </div>
+
+                        <div class="ui-grid-col-4"><h:outputLabel value=""/></div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </body>
+</html>
+
+
+
+
