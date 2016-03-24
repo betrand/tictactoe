@@ -81,7 +81,7 @@
                                 <h:panelGrid columns="1" styleClass="center-contents" style="border: 1px solid black;">
                                     <p:commandLink 
                                         styleClass="center-contents"
-                                        title="#{item.mark} Player Mark"  
+                                        title="#{item.mark} Player Mark, #{item.id} :#{item.row}, #{item.col}"  
                                         style="text-decoration: none; text-align: center; color: #46b8da; "
                                         actionListener="#{game.play}"
                                         update="@form growl">

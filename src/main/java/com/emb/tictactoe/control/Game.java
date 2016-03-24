@@ -83,17 +83,17 @@ public class Game implements Serializable {
                     //LOG.info("Current Player", player);
                     cell.setMark(sb.append(ticTacToe.getPlayer())
                             .append(".png").toString());
-                    player = ticTacToe.switchPlayer();
                     //LOG.info("Next Player", player);
                 }
             }
             updateScreen(cell);
+            player = ticTacToe.switchPlayer();
         }
     }
 
     public void play() {
         if (player == null) {
-            JsfUtil.addErrorMessage("Please Specify the first Player");
+            JsfUtil.addErrorMessage(JsfUtil.START);
             return;
         }
 
@@ -121,13 +121,11 @@ public class Game implements Serializable {
 
         if (ticTacToe.isGameOver()) {
             state = JsfUtil.WIN;
-            LOG.info("state", state);
             announceTheWinner();
             ticTacToe.displayScreen();
             return;
         } else if (!ticTacToe.isGameOver() && ticTacToe.cellIsNotAvailable()) {
             state = JsfUtil.DRAW;
-            LOG.info("state", state);
         } else {
             state = JsfUtil.PLAYING;
         }
@@ -137,18 +135,31 @@ public class Game implements Serializable {
     private void announceTheWinner() {
         //if diagonal Marks Are Equal 1,1 must be in a cell of the winner
         if (ticTacToe.diagonalMarksAreEqual()) {
-            announceWinner();
+            JsfUtil.addSuccessMessage(new StringBuilder("GAME OVER!!!  ")
+                    .append(getPlayerName()).append(" WON").toString());
             return;
         }
         if (ticTacToe.rowMarksAreEqual()) {
             //if row Marks Are Equal 0,1, 1,1 and 2,1 must be cells of the winner
-            announceWinner(new Cell(0, 1), new Cell(0, 1), new Cell(0, 1));
+            JsfUtil.addSuccessMessage(new StringBuilder("GAME OVER!!!  ")
+                    .append(getPlayerName()).append(" WON").toString());
             return;
         }
         if (ticTacToe.columnMarksAreEqual()) {
             //if column Marks Are Equal 1,0, 1,1 and 1,2 must be in cells of the winner
-            announceWinner(new Cell(1, 0), new Cell(1, 1), new Cell(1, 2));
+            JsfUtil.addSuccessMessage(new StringBuilder("GAME OVER!!!  ")
+                    .append(getPlayerName()).append(" WON").toString());
         }
+    }
+
+    private String getPlayerName() {
+        if (player != null && player.equals("X")) {
+            return "SYSTEM PLAYER";
+        }
+        if (player != null && player.equals("O")) {
+            return "HUMAN PLAYER";
+        }
+        return "";
     }
 
     private Cell findCellById(Integer id) {
@@ -176,72 +187,19 @@ public class Game implements Serializable {
         int count = 0;
         index = ThreadLocalRandom.current().nextInt(list.size());
         cell = list.get(index);
-        LOG.info("Entering y loop with index ", index);
-        LOG.info("ticTacToe.cellIsNotAvailable()", ticTacToe.cellIsNotAvailable());
+        //LOG.info("Entering y loop with index ", index);
         while (!isAvailable(cell) && ticTacToe.cellIsNotAvailable()
                 && count < 50) {
-            LOG.info("Index " + index, " is not available");
+            //LOG.info("Index " + index, " is not available");
             count++;
             index = ThreadLocalRandom.current().nextInt(list.size());
         }
-        LOG.info("Index " + index, " on loop exit");
+        //LOG.info("Index " + index, " on loop exit");
         return cell;
     }
 
     private boolean isAvailable(Cell cell) {
         return cell != null && cell.getMark() == null;
-    }
-
-    private void announceWinner(Cell cell1, Cell cell2, Cell cell3) {
-        Cell cell1_ = findCellByRowAndColumn(cell1);
-        Cell cell2_ = findCellByRowAndColumn(cell2);
-        Cell cell3_ = findCellByRowAndColumn(cell2);
-        if (cell1_ != null && cell2_ != null && cell3_ != null) {
-
-            if (cell1_.getMark() != null && cell1_.getMark().equals(cell2_.getMark())) {
-                if (cell1_.getMark().equals("X")) {
-                    JsfUtil.addSuccessMessage("GAME OVER!!! SYSTEM PLAYER WON");
-                } else {
-                    JsfUtil.addSuccessMessage("GAME OVER!!! YOU WON");
-                }
-
-            } else if (cell1_.getMark() != null && cell1_.getMark().equals(cell3_.getMark())) {
-                if (cell1_.getMark().equals("X")) {
-                    JsfUtil.addSuccessMessage("GAME OVER!!! SYSTEM PLAYER WON");
-                } else {
-                    JsfUtil.addSuccessMessage("GAME OVER!!! YOU WON");
-                    return;
-                }
-            } else if (cell2_.getMark() != null && cell2_.getMark().equals(cell3_.getMark())) {
-                if (cell2_.getMark().equals("X")) {
-                    JsfUtil.addSuccessMessage("GAME OVER!!! SYSTEM PLAYER WON");
-                } else {
-                    JsfUtil.addSuccessMessage("GAME OVER!!! YOU WON");
-                }
-            }
-        } else {
-            JsfUtil.addSuccessMessage("GAME OVER!");
-        }
-
-    }
-
-    private Cell findCellByRowAndColumn(Cell cell) {
-        for (Cell currentCell : screen) {
-            if (currentCell.equals(cell, "")) {
-                return currentCell;
-            }
-        }
-        return null;
-    }
-
-    private void announceWinner() {
-        //if diagonal is equal 1,1 must be of a char of the winner
-        Cell winnerCell = findCellById(5);
-        if (winnerCell.getMark().equals("X")) {
-            JsfUtil.addSuccessMessage("GAME OVER!!! SYSTEM PLAYER WON");
-        } else {
-            JsfUtil.addSuccessMessage("GAME OVER!!! YOU WON");
-        }
     }
 
     private List<Cell> setupCells() {
